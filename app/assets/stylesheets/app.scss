@@ -1,0 +1,75 @@
+@import "ecosystems";
+
+pre code.hljs{
+  padding: 0 !important;
+}
+
+#readme-body img, #readme-body table{
+  max-width: 100%;
+}
+
+.registry{
+  @include media-breakpoint-up(sm){
+    min-height: 200px;
+  }
+}
+
+.advisory-header__meta__text {
+  @include font-size(1rem);
+  line-height: 1.4rem;
+}
+
+.advisory-header__title {
+  line-break: anywhere;
+}
+
+.ecosystems-table {
+  border: 0;
+  border-width: 0;
+  border-color: transparent;
+  tbody {
+    border: 0;
+  }
+  th {
+    border: 0;
+    border-bottom: 3px solid $color-purple-light;;
+  }
+  tr {
+    border-bottom: 1px solid $color-purple-light;
+  }
+  td {
+    border: 0;
+  }
+  tr:has(+ .collapse-row) {
+	border-bottom: 1px solid transparent;
+  }
+}
+
+.page-content {
+  a {
+    line-break: anywhere;
+    @include media-breakpoint-up(md) {
+      line-break: loose;
+    }
+  }
+}
+
+.purple-grad-bg {
+  a {
+    color: $color-white;
+  }
+  .breadcrumb,
+  .breadcrumb-item + .breadcrumb-item::before {
+    color: $color-white;
+
+  }
+}
+
+.btn-link {
+  @include spesh-link();
+  border-radius: 0;
+}
+
+.list-group-item.active {
+  background-color: $color-purple-dark;
+}

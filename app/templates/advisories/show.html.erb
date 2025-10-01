@@ -1,0 +1,135 @@
+<div class="purple-grad-bg mb-5 pt-5 pb-4">
+  <div class="container">
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">ecosyste.ms</a></li>
+        <li class="breadcrumb-item"><%= link_to 'Security Advisories', advisories_path %></li>
+        <li class="breadcrumb-item" aria-current="page"><%= advisory.ecosystems.join(', ') %></li>
+      </ol>
+    </nav>
+
+    <h2 class="h3 advisory-header__title mb-4"><%= advisory %></h2>
+
+    <div class="advisory-header__meta d-flex flex-wrap align-items-center mb-4">
+      <div class="d-flex flex-wrap flex-grow-1 mb-2">
+        <span class="me-4 mb-2 badge <%= severity_class(advisory.severity)%>"><%= humanize(advisory.severity) %></span>
+        <% if advisory.cvss_score && advisory.cvss_score > 0 %>
+        <span class="me-4 mb-2 advisory-header__meta__text">CVSS: <%= advisory.cvss_score %></span>
+        <% end %>
+        <% if advisory.epss_percentage %>
+          <span class="me-4 advisory-header__meta__text">EPSS: <%= advisory.epss_percentage %>% (<%= advisory.epss_percentile %> Percentile)</span>
+        <% end %>
+        <% if advisory.epss_percentile %>
+          <span class="me-4 advisory-header__meta__text">EPSS: </span>
+        <% end %>
+        <!-- <span class="advisory-header__meta__text">Blast Radius: <%= advisory.blast_radius.round(1) %></span> -->
+      </div>
+      <div class="d-flex mb-2 advisory-header__meta__text">
+        <%= link_to "Permalink", advisory.url, target: :_blank, class: "me-3 mb-2" %>
+        <%= link_to "JSON", api_v1_advisory_url(advisory) %>
+      </div>
+      
+    </div>
+  	<h1 class="h2"><%= advisory.title %> </h1>
+  </div>
+</div>
+<div class="container">
+  <div class="table-wrapper table-responsive-lg">
+    <table class="table table-bordered ecosystems-table mb-5">
+      <thead class=" ">
+        <tr>
+          <th>Affected Packages</th>
+          <th>Affected Versions</th>
+          <th>Fixed Versions</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+      <% advisory.packages.each_with_index do |package, index| %>
+        <tr>
+          <td>
+            <a href="https://packages.ecosyste.ms" target="_blank">
+              <%= package['ecosystem'] %>:<%= package['package_name'] %>
+            </a>
+          </td>
+          <td>
+            <%= package['versions'].map{|v| v['vulnerable_version_range']}.join(', ') %>
+          </td>
+          <td>
+            <% if package['versions'].map{|v| v['first_patched_version']}.any? %>
+              <%=  package['versions'].map{|v| v['first_patched_version']}.join(', ') %>
+            <% else %>
+              No known fixed version
+            <% end %>
+          </td>
+          <td></td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+
+	<div class="row">
+		<div class="col-lg-8">
+			<div class="page-content mt-4 pe-lg-3">
+        <%== render_markdown advisory.description %>
+        References: 
+          <ul>
+          <% advisory.references.each do |url| %>
+            <li><%= link_to(url, url, target: :_blank) %></li>
+          <% end %>
+          </ul>
+			</div>
+		</div>
+
+		<div class="col-lg-4">
+      <div class="sidebar rounded p-4 mt-4">
+        <h2>Identifiers</h2>
+        <% advisory.identifiers.each do |identifier| %>
+          <p><%= identifier %></p>
+        <% end %>
+        <h2>Risk</h2>
+        <h3>Severity</h3>
+        <p><span class='me-4 badge <%= severity_class(advisory.severity)%>'><%= humanize(advisory.severity) %></span> </p>
+        <!--
+        <h3>Blast radius</h3>
+        <p><%= advisory.blast_radius.round(1) %> </p>
+        -->
+        <% if advisory.cvss_score && advisory.cvss_score > 0 %>
+          <h3>CVSS</h3>
+          <p>CVSS Score: <%= advisory.cvss_score %> </p>
+          <p>CVSS vector: <code><%= advisory.cvss_vector %></code></p>
+        <% end %>
+        <% if advisory.epss_percentage %>
+          <h3>EPSS</h3>
+          <p>EPSS Percentage: <%= advisory.epss_percentage %></p>
+          <p>EPSS Percentile: <%= advisory.epss_percentile %></p>
+        <% end %>
+        <h2>Classification</h2>
+        <p><%= humanize(advisory.classification) %></p>
+        <h2>Source</h2>
+        <p><%= advisory.source %></p>
+        <h2>Origin</h2>
+        <p><%= humanize(advisory.origin) %></p>
+        <% if advisory.repository_url.present? %>
+        <h2>Repository</h2>
+        <p><%= link_to advisory.repository_url, advisory.repository_url, target: :_blank %></p>
+        <% end %>
+        <h2>Date and time</h2>
+        <h3>Published</h3>
+        <p><span title="<%= advisory.published_at %>"><%= time_ago_in_words advisory.published_at %> ago</span></p>
+        <h3>Updated</h3>
+        <p><span title="<%= advisory.updated_at %>"><%= time_ago_in_words advisory.updated_at %> ago</span></p>
+        <% if advisory.withdrawn_at %>
+          <h3>Withdrawn</h3>
+          <p><span title="<%= advisory.withdrawn_at %>"><%= time_ago_in_words advisory.withdrawn_at %> ago</span></p>
+        <% end %>
+        <h2>API</h2>
+        <p><%= link_to "JSON", api_v1_advisory_url(@advisory) %></p>
+      </div>
+		
+		</div>
+	</div>
+  
+</div>
