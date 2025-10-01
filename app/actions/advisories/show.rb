@@ -10,9 +10,8 @@ module AdvisoriesApp
           advisory = advisory_repo.by_uuid(request.params[:id])
 
           if advisory.nil?
-            response.status = 404
             response.body = ["Advisory not found"]
-            return
+            halt 404 # or :not_found
           end
 
           if request.accept?("text/html")
