@@ -3,7 +3,7 @@
 source "https://rubygems.org"
 
 gem "hanami", "~> 2.2"
-gem "hanami-sprockets", path: "/Users/andrew/code/hanami-sprockets"
+gem "hanami-sprockets", github: "andrew/hanami-sprockets"
 gem "hanami-controller", "~> 2.2"
 gem "hanami-db", "~> 2.2"
 gem "hanami-router", "~> 2.2"
